@@ -1,0 +1,5 @@
+Shader compilation:
+./compile.sh
+
+Program compilation & running:
+make test
