@@ -22,6 +22,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include "engine/Window.hpp"
+
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
@@ -160,7 +162,7 @@ struct SwapChainSupportDetails {
 class HelloTriangleApplication {
  public:
   void run() {
-    initWindow();
+    window = new ts::Window(WIDTH, HEIGHT, "Vulkan");
     initVulkan();
     mainLoop();
     cleanup();
@@ -203,33 +205,6 @@ class HelloTriangleApplication {
     return true;
   }
 
-  void initWindow() {
-    glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-
-    GLFWmonitor** monitors = nullptr;
-    int count;
-    monitors = glfwGetMonitors(&count);
-    if (count <= 0) {
-      throw std::runtime_error("failed to find monitor!");
-    }
-    if (bFullscreen) {
-      const GLFWvidmode* mode = glfwGetVideoMode(monitors[0]);
-      glfwSetWindowMonitor(window, monitors[0], 0, 0, mode->width, mode->height, mode->refreshRate);
-    }
-
-    glfwSetWindowUserPointer(window, this);
-    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-  }
-
-  static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-    auto app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
-    app->framebufferResized = true;
-  }
-
   void initVulkan() {
     createInstance();
     setupDebugMessenger();
@@ -257,7 +232,7 @@ class HelloTriangleApplication {
   }
 
   void mainLoop() {
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window->getHandle())) {
       glfwPollEvents();
       drawFrame();
     }
@@ -417,7 +392,7 @@ class HelloTriangleApplication {
   }
 
   void createSurface() {
-    if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(instance, window->getHandle(), nullptr, &surface) != VK_SUCCESS) {
       throw std::runtime_error("failed to create window surface!");
     }
   }
@@ -615,7 +590,7 @@ class HelloTriangleApplication {
       return capabilities.currentExtent;
     } else {
       int width, height;
-      glfwGetFramebufferSize(window, &width, &height);
+      glfwGetFramebufferSize(window->getHandle(), &width, &height);
 
       VkExtent2D actualExtent = {
           static_cast<uint32_t>(width),
@@ -1584,9 +1559,9 @@ class HelloTriangleApplication {
 
   void recreateSwapChain() {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
+    glfwGetFramebufferSize(window->getHandle(), &width, &height);
     while (width == 0 || height == 0) {
-      glfwGetFramebufferSize(window, &width, &height);
+      glfwGetFramebufferSize(window->getHandle(), &width, &height);
       glfwWaitEvents();
     }
 
@@ -1672,12 +1647,13 @@ class HelloTriangleApplication {
     vkDestroySurfaceKHR(instance, surface, nullptr);
     vkDestroyInstance(instance, nullptr);
 
-    glfwDestroyWindow(window);
+    //glfwDestroyWindow(window);
 
-    glfwTerminate();
+    //glfwTerminate();
   }
 
-  GLFWwindow* window;
+  //GLFWwindow* window;
+  ts::Window * window;
   VkInstance instance;
   VkDebugUtilsMessengerEXT debugMessenger;
   VkSurfaceKHR surface;
