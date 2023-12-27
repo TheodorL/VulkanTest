@@ -2,8 +2,8 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE ;
 #define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include <string.h>
 #include <vulkan/vulkan.h>
 

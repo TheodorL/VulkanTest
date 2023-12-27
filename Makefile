@@ -1,19 +1,19 @@
 STB_INCLUDE_PATH = /home/theodor/libraries/stb
-CFLAGS = -std=c++17 -I$(STB_INCLUDE_PATH) -I$(ENGINE_INCLUDE_PATH) -O2
+CFLAGS = -std=c++17 -I$(STB_INCLUDE_PATH) -O2
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 
-window.o: engine/Window.cpp
-	clang++ -c -o build/window.o engine/Window.cpp
-
-VulkanApp: main.cpp window.o
+VulkanApp: main.cpp build/window.o shaders/vert.spv shaders/frag.spv
 	clang++ $(CFLAGS) -o VulkanApp main.cpp build/window.o $(LDFLAGS)
 
-Shaders: shaders/shader.vert shaders/shader.frag
+build/window.o: engine/Window.cpp
+	clang++ $(CFLAGS) -c -o build/window.o engine/Window.cpp
+
+shaders/vert.spv shaders/frag.spv: shaders/shader.vert shaders/shader.frag
 	./compile.sh
 
-.PHONY: test clean
+.PHONY: run clean 
 
-test: VulkanApp Shaders
+run: VulkanApp
 	./VulkanApp
 
 clean:
