@@ -1,7 +1,9 @@
 #include "Window.hpp"
 
-using namespace ts;
+#include <stdexcept>
 
+using namespace ts;
+#define CONST_BOOL 10
 bool Window::init = false;
 uint32_t Window::count = 0;
 
@@ -13,7 +15,6 @@ Window::Window() {
 Window::Window(const uint32_t width, const uint32_t height, const char* title) {
   checkInit();
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
   handle = glfwCreateWindow(width, height, title, nullptr, nullptr);
   glfwSetWindowUserPointer(handle, this);
   glfwSetFramebufferSizeCallback(handle, framebufferResizeCallback);
