@@ -43,6 +43,7 @@ const bool bFullscreen = false;
 const float CAMERA_FOV = 45.0f;
 const float CAMERA_Z_NEAR = 0.1f;
 const float CAMERA_Z_FAR = 10.0f;
+const glm::vec3 CAMERA_START_POS = glm::vec3(0.0f, -1.0f, -2.0f);
 
 const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation",
@@ -352,6 +353,7 @@ class HelloTriangleApplication {
 
   void initCamera() {
     camera = new ts::Camera(CAMERA_FOV, swapChainExtent.width / (float)swapChainExtent.height, CAMERA_Z_NEAR, CAMERA_Z_FAR);
+    camera->setPosition(CAMERA_START_POS);
   }
 
   void createInstance() {
@@ -1832,6 +1834,7 @@ class HelloTriangleApplication {
     }
 
     camera->matrices.perspective = glm::perspective(CAMERA_FOV, swapChainExtent.width / (float)swapChainExtent.height, CAMERA_Z_NEAR, CAMERA_Z_FAR);
+    camera->matrices.perspective[1][1] *= -1;
 
     vkDeviceWaitIdle(device);
 

@@ -12,6 +12,7 @@ class Camera {
 
   bool moving();
   void update(float deltaTime);
+  void setPosition(glm::vec3 position);
 
   struct {
     glm::mat4 perspective;
@@ -25,13 +26,12 @@ class Camera {
     bool down = false;
   } keys;
 
-  glm::vec3 position = glm::vec3();
-
  private:
   float fov;
   float znear, zfar;
   float translationSpeed = 0.4f;
 
+  glm::vec3 position = glm::vec3();
   glm::vec3 rotation = glm::vec3();
 
   void updateViewMatrix();

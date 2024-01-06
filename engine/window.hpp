@@ -1,13 +1,15 @@
 #pragma once
 #include <GLFW/glfw3.h>
-
+#include <glm/common.hpp>
+#include <glm/glm.hpp>
 namespace ts {
 
-struct Keys{
+struct Keys {
   bool up = false;
   bool down = false;
   bool left = false;
   bool right = false;
+  bool shift = false;
 };
 
 class Window {
@@ -24,8 +26,13 @@ class Window {
 
  private:
   void checkInit();
+  void updateKey(bool& key, const int action);
   static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
   static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+  static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
+  glm::dvec2 prevCursorPos;
   Keys keys{};
   static Window* pThis;
   bool windowResized = false;

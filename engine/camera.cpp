@@ -1,5 +1,6 @@
 #include "camera.hpp"
 
+#include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
 namespace ts {
@@ -46,9 +47,14 @@ void Camera::update(float deltaTime) {
     if (keys.right) {
       position += glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f))) * moveSpeed;
     }
-
     updateViewMatrix();
   }
+  std::cout  << "\033[1;33m" + glm::to_string(position) + "\033[0;0m" << '\n';
+}
+
+void Camera::setPosition(glm::vec3 position) {
+  this->position = position;
+  updateViewMatrix();
 }
 
 bool Camera::moving() {
