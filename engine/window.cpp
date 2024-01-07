@@ -89,17 +89,41 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
     case GLFW_KEY_RIGHT:
       pThis->updateKey(pThis->keys.right, action);
       break;
+    case GLFW_KEY_ESCAPE:
+      if (pThis->captureCursor) {
+        //replace with hidden and draw cursor using vulkan.
+        pThis->captureCursor = false;
+        glfwSetInputMode(pThis->handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+      }
     default:
       break;
   }
 }
 
+glm::dvec2 Window::getCursorDelta() {
+  if (cursorUpdated) {
+    cursorUpdated = false;
+    return cursorPos - prevCursorPos;
+  } else {
+    return glm::dvec2(0.0);
+  }
+}
+
 void Window::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
-  pThis->prevCursorPos.x = xpos;
-  pThis->prevCursorPos.y = ypos;
-  std::cout << pThis->prevCursorPos.x << " " << pThis->prevCursorPos.y << '\n';
+  //std::cout << "Cursor:" << xpos << " " << ypos << "\n";
+  if (pThis->captureCursor) {
+    glfwSetCursorPos(pThis->handle, 0.0, 0.0);
+    pThis->prevCursorPos = glm::dvec2(0.0);
+    pThis->cursorPos.x = xpos;
+    pThis->cursorPos.y = ypos;
+    pThis->cursorUpdated = true;
+  }
 }
 
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-
+  if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+    pThis->captureCursor = true;
+    glfwSetInputMode(pThis->handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPos(pThis->handle, 0.0, 0.0);
+  }
 }

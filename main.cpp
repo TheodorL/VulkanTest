@@ -28,6 +28,7 @@
 
 #include "engine/camera.hpp"
 #include "engine/window.hpp"
+#include "engine/basic_types.hpp"
 #include "tiny_obj_loader.h"
 
 const auto PRESENT_MODE = VK_PRESENT_MODE_FIFO_KHR;
@@ -299,7 +300,9 @@ class HelloTriangleApplication {
     camera->keys.down = keys.down;
     camera->keys.left = keys.left;
     camera->keys.right = keys.right;
+    camera->keys.shift = keys.shift;
     camera->update(deltaFrameTime);
+    camera->processCursorMovement(window->getCursorDelta());
     printf("Frame %d | Latency: %.3f ms | FPS: %d \n", currentFrame, deltaFrameTime * 1000.0f, static_cast<int32_t>(1 / deltaFrameTime));
     updateUniformBuffer(currentFrame);
 

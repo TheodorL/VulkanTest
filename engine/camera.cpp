@@ -35,6 +35,9 @@ void Camera::update(float deltaTime) {
     front = glm::normalize(front);
     float moveSpeed = deltaTime * translationSpeed;
 
+    if (keys.shift) {
+      moveSpeed *= 3.0f;
+    }
     if (keys.up) {
       position += front * moveSpeed;
     }
@@ -49,7 +52,15 @@ void Camera::update(float deltaTime) {
     }
     updateViewMatrix();
   }
-  std::cout  << "\033[1;33m" + glm::to_string(position) + "\033[0;0m" << '\n';
+  //std::cout  << "\033[1;33m" + glm::to_string(position) + "\033[0;0m" << '\n';
+}
+
+void Camera::processCursorMovement(glm::dvec2 delta) {
+    rotation.y += static_cast<float>(delta.x) * rotationSensitivity.x; //yaw
+    rotation.x += static_cast<float>(delta.y) * rotationSensitivity.y; //pitch
+    if (rotation.x > 89.0f) rotation.x = 89.0f;
+    else if (rotation.x < -89.0f) rotation.x = -89.0f;
+    updateViewMatrix();
 }
 
 void Camera::setPosition(glm::vec3 position) {
